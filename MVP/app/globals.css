@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900;
+}
+
+/* סיכום להדפסה/שמירה כ-PDF: רקע לבן, שוליים, RTL. */
+@media print {
+  @page {
+    margin: 1.5cm;
+  }
+  body {
+    background: white;
+    direction: rtl;
+  }
+}

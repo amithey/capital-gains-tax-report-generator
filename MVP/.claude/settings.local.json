@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "WebSearch",
+      "WebFetch(domain:edge.boi.org.il)"
+    ]
+  }
+}
