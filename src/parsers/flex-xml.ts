@@ -185,6 +185,10 @@ function parseCashTransactions(
  * זורק שגיאה רק אם המבנה אינו Flex Query כלל (לזיהוי פורמט ראה detect.ts).
  */
 export function parseFlexQueryXml(xml: string): ParsedActivity {
+  // Flex reports do not need DTDs. Reject them before parsing to prevent custom entity expansion.
+  if (/<!\s*(?:DOCTYPE|ENTITY)\b/i.test(xml)) {
+    throw new Error("דוח XML עם הגדרות DOCTYPE או ENTITY אינו נתמך מטעמי אבטחה. יש לייצא Flex Query רגיל מ-IBKR.");
+  }
   const warnings: string[] = [];
   const warn = (m: string): void => {
     warnings.push(m);

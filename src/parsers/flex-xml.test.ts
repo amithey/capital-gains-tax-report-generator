@@ -54,6 +54,22 @@ describe("parseFlexQueryXml", () => {
 });
 
 describe("parseFlexQueryXml — שגיאות", () => {
+  it.each([
+    '<!DOCTYPE FlexQueryResponse [<!ENTITY custom "expanded">]>',
+    '<!DOCTYPE FlexQueryResponse SYSTEM "https://example.invalid/external.dtd">',
+    '<!ENTITY custom "expanded">',
+    '<!doctype FlexQueryResponse>',
+  ])("rejects unsupported declarations before parsing: %s", (declaration) => {
+    expect(() => parseFlexQueryXml(declaration + sampleXml)).toThrow(/DOCTYPE.*ENTITY/);
+  });
+
+  it("preserves standard escaped characters in report attributes", () => {
+    const xml = '<FlexQueryResponse><FlexStatements><FlexStatement><Trades>' +
+      '<Trade buySell="BUY" symbol="ABC" tradeDate="20240101" quantity="1" tradePrice="10" proceeds="-10" currency="USD" description="A &amp; B &quot;Fund&quot;" />' +
+      '</Trades></FlexStatement></FlexStatements></FlexQueryResponse>';
+    expect(parseFlexQueryXml(xml).trades[0]?.description).toBe('A & B "Fund"');
+  });
+
   it("זורק שגיאה ברורה כשאין FlexQueryResponse", () => {
     expect(() => parseFlexQueryXml("<root><foo/></root>")).toThrow(/FlexQueryResponse/);
   });
