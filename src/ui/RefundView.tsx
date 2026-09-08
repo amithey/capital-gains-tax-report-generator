@@ -16,7 +16,7 @@ export function RefundView({ result }: { result: RefundResult }) {
     <div className="space-y-5">
       {/* כותרת תוצאה */}
       <div className={`rounded-xl border p-6 text-center ${refund ? "border-emerald-300 bg-emerald-50" : "border-rose-300 bg-rose-50"}`}>
-        <div className="text-sm text-slate-600">{refund ? "אומדן החזר המס שמגיע לך" : "אומדן חבות מס נוספת"}</div>
+        <div className="text-sm text-slate-600">{result.refundIls === 0 ? "אין הפרש מס באומדן הנוכחי" : refund ? "אומדן החזר מס לפי הנתונים שהוזנו" : "אומדן חבות מס נוספת"}</div>
         <div className={`mt-1 text-4xl font-bold tabular-nums ${refund ? "text-emerald-700" : "text-rose-700"}`}>
           {ils(Math.abs(result.refundIls))}
         </div>
@@ -42,7 +42,7 @@ export function RefundView({ result }: { result: RefundResult }) {
         <Row label="סך חבות המס" value={ils(result.totalLiabilityIls)} strong />
         <Row label="סך המס שכבר נוכה" value={ils(result.totalWithheldIls)} strong />
         <div className="my-2 border-t border-slate-100" />
-        <Row label={refund ? "החזר מגיע" : "חבות נוספת"} value={ils(Math.abs(result.refundIls))} strong />
+        <Row label={refund ? "אומדן החזר" : "אומדן חבות נוספת"} value={ils(Math.abs(result.refundIls))} strong />
       </section>
 
       {/* פירוט לפי מקור הכנסה */}

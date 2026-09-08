@@ -5,6 +5,30 @@ import { getTaxYearConfig } from "./config";
 
 const brackets2024 = getTaxYearConfig(2024).marginalBrackets;
 
+describe("refund result contract", () => {
+  it("returns the additional income and credit used in the calculation", () => {
+    const result = computeRefund({
+      taxYear: 2024,
+      employers: [],
+      creditPoints: 0,
+      otherIncome: { taxableIls: 10000, withheldIls: 1200 },
+      yishuvMutav: { rate: 0.1, ceilingIls: 5000 },
+    });
+    expect(result.otherTaxableIncomeIls).toBe(10000);
+    expect(result.otherIncomeWithheldIls).toBe(1200);
+    expect(result.yishuvMutavCreditIls).toBe(500);
+    expect(result.totalWithheldIls).toBe(1200);
+    expect(result.refundIls).toBe(700);
+  });
+
+  it("returns explicit zero values for absent additional components", () => {
+    const result = computeRefund({ taxYear: 2024, employers: [], creditPoints: 0 });
+    expect(result.otherTaxableIncomeIls).toBe(0);
+    expect(result.otherIncomeWithheldIls).toBe(0);
+    expect(result.yishuvMutavCreditIls).toBe(0);
+  });
+});
+
 describe("incomeTaxOnBrackets (מדרגות 2024)", () => {
   it("הכנסה 0 → מס 0", () => expect(incomeTaxOnBrackets(0, brackets2024)).toBe(0));
   it("בתוך המדרגה הראשונה (10%)", () => {

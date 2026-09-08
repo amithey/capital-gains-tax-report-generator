@@ -10,6 +10,7 @@ import { InvestorStep } from "./steps/InvestorStep";
 import { RentalStep } from "./steps/RentalStep";
 import { CreditPointsStep } from "./steps/CreditPointsStep";
 import { ResultsStep } from "./steps/ResultsStep";
+import { FilingStep } from "./steps/FilingStep";
 
 /**
  * מעטפת האשף: פס התקדמות, תוכן הצעד הנוכחי, וניווט קדימה/אחורה.
@@ -72,6 +73,7 @@ export function WizardShell() {
       {currentStep.id === "investor" && <InvestorStep />}
       {currentStep.id === "rental" && <RentalStep />}
       {currentStep.id === "creditPoints" && <CreditPointsStep />}
+      {currentStep.id === "filing" && <FilingStep />}
       {currentStep.id === "results" && <ResultsStep />}
 
       {/* ניווט */}

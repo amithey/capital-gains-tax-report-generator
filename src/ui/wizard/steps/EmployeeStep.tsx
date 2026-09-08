@@ -29,6 +29,7 @@ export function EmployeeStep() {
       </p>
 
       <div className="space-y-3">
+        <p className="text-sm text-slate-600">לא יודעים סכום? השאירו ריק וחזרו להשלימו. אם בטופס הסכום הוא אפס, הזינו 0. מעסיק שלא רלוונטי אפשר להסיר.</p>
         {fields.employers.map((e, i) => (
           <div key={i} className="grid grid-cols-1 gap-3 rounded-lg border border-slate-100 bg-slate-50 p-3 md:grid-cols-3">
             <Field label="שם מעסיק (לא חובה)" value={e.name} onChange={(v) => updateEmployer(i, { name: v })} />

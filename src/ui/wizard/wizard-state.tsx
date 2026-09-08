@@ -3,6 +3,7 @@
 import { createContext, useContext, useMemo, useReducer, useState, type ReactNode } from "react";
 import type { AnnualTaxResult } from "@/tax-engine";
 import type { ImportResult } from "@/ui/import-file";
+import { EMPTY_FILING_PROFILE, type FilingProfile } from "@/report/filing-profile";
 
 /**
  * ה-state המרכזי של האשף — דף יחיד מונחה-צעדים (לא ראוטים), כי כל העיבוד
@@ -25,6 +26,7 @@ export interface ExpenseRow {
 }
 
 export interface WizardFields {
+  filing: FilingProfile;
   profiles: Record<ProfileId, boolean>;
   taxYear: number;
   stepIndex: number;
@@ -60,6 +62,7 @@ export interface WizardFields {
 }
 
 export const initialFields: WizardFields = {
+  filing: { ...EMPTY_FILING_PROFILE },
   profiles: { employee: false, selfEmployed: false, investor: false, landlord: false },
   taxYear: 2024,
   stepIndex: 0,
@@ -114,6 +117,7 @@ export type StepId =
   | "investor"
   | "rental"
   | "creditPoints"
+  | "filing"
   | "results";
 
 export interface StepMeta {
@@ -129,6 +133,7 @@ export function buildSteps(profiles: Record<ProfileId, boolean>): StepMeta[] {
   if (profiles.investor) steps.push({ id: "investor", title: "שוק ההון" });
   if (profiles.landlord) steps.push({ id: "rental", title: "דירה מושכרת" });
   steps.push({ id: "creditPoints", title: "נקודות זיכוי" });
+  steps.push({ id: "filing", title: "בדיקת שלמות התיק" });
   steps.push({ id: "results", title: "תוצאה וטפסים" });
   return steps;
 }

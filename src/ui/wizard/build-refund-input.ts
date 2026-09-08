@@ -12,6 +12,7 @@ import {
 } from "@/tax-engine";
 import type { ImportResult } from "@/ui/import-file";
 import { num, type WizardFields } from "./wizard-state";
+import { validateCase } from "./validate-case";
 
 /**
  * גשר בין ה-state של האשף למנוע ההחזר: ממיר את שדות הקלט (מחרוזות)
@@ -55,7 +56,7 @@ export function rentalFromFields(fields: WizardFields): RentalRefundInput | unde
   return {
     taxYear: fields.taxYear,
     monthlyRentIls: num(fields.rentMonthly),
-    monthsRented: num(fields.rentMonths) || 12,
+    monthsRented: num(fields.rentMonths),
     expenses: {
       ...(fields.rentMortgageInterest.trim() ? { mortgageInterestIls: num(fields.rentMortgageInterest) } : {}),
       ...(fields.rentRepairs.trim() ? { repairsIls: num(fields.rentRepairs) } : {}),
@@ -93,18 +94,20 @@ export function buildRefundInput(
   imported: ImportResult | null,
   flexResult: AnnualTaxResult | null,
 ): RefundInput {
-  const investment = investmentFromImport(imported, flexResult);
+  const issues = validateCase(fields, imported, flexResult);
+  if (issues.length) throw new Error(issues.map((issue) => issue.message).join("\n"));
+  const investment = fields.profiles.investor ? investmentFromImport(imported, flexResult) : undefined;
   const selfEmployed = selfEmployedFromFields(fields);
   const rental = rentalFromFields(fields);
   return {
     taxYear: fields.taxYear,
     employers: fields.profiles.employee ? employersFromFields(fields) : [],
     creditPoints: num(fields.creditPoints),
-    credits: {
+    credits: fields.profiles.employee ? {
       ...(fields.pension.trim() ? { pensionEmployeeIls: num(fields.pension) } : {}),
       ...(fields.life.trim() ? { lifeInsuranceIls: num(fields.life) } : {}),
       ...(fields.donations.trim() ? { donationsIls: num(fields.donations) } : {}),
-    },
+    } : {},
     ...(investment ? { investment: investment.input } : {}),
     ...(selfEmployed ? { selfEmployed } : {}),
     ...(rental ? { rental } : {}),

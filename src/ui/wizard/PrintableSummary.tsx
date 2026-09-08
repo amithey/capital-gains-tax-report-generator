@@ -4,6 +4,7 @@ import type { RefundResult } from "@/tax-engine";
 import type { FormsGuide } from "@/report/forms-guide";
 import { DISCLAIMER_FULL } from "@/report/disclaimer";
 import { ils } from "@/ui/format";
+import { FormsChecklist } from "./FormsChecklist";
 
 /**
  * מסך הסיכום להדפסה/שמירה כ-PDF (Ctrl+P → "שמירה כ-PDF").
@@ -11,7 +12,14 @@ import { ils } from "@/ui/format";
  * בחרנו בהדפסת דפדפן ולא בספריית PDF כי התמיכה בעברית/RTL בספריות JS חלשה,
  * וכך אין תלות נוספת והפלט זהה לתצוגה.
  */
-export function PrintableSummary({ result, guide }: { result: RefundResult; guide: FormsGuide }) {
+export function PrintableSummary({ result, guide, issues = [] }: { result: RefundResult | null; guide: FormsGuide; issues?: readonly string[] }) {
+  if (!result) return <div className="hidden print:block" dir="rtl">
+    <h1 className="text-xl font-bold">תיק הכנה להחזר מס - שנת {guide.taxYear}</h1>
+    <p className="my-3 font-semibold">אין אומדן כולל: חסרים נתונים או נדרש חישוב שאינו נתמך. מסמך זה אינו דוח רשמי להגשה.</p>
+    <ul className="mb-4 list-disc pr-5 text-sm">{issues.map((issue) => <li key={issue}>{issue}</li>)}</ul>
+    <FormsChecklist guide={guide} />
+    <p className="mt-6 border-t pt-3 text-xs">{DISCLAIMER_FULL}</p>
+  </div>;
   const refund = result.isRefund;
   return (
     <div className="hidden print:block" dir="rtl">
@@ -19,6 +27,25 @@ export function PrintableSummary({ result, guide }: { result: RefundResult; guid
       <p className="mt-1 text-sm text-slate-600">
         הופק בתאריך {new Date().toLocaleDateString("he-IL")} · אומדן בלבד, טעון אימות רו"ח
       </p>
+      <p className="mt-2 text-sm font-semibold">
+        טיוטת חישוב בלבד — אינה טופס רשמי להגשה לרשות המסים ואינה אישור זכאות להחזר.
+      </p>
+      {result.missing.length > 0 && (
+        <section className="mt-4 border border-slate-300 p-3">
+          <h2 className="font-bold">מידע חסר שעשוי לשנות את התוצאה</h2>
+          <ul className="mt-2 list-disc pr-5 text-sm">
+            {result.missing.map((message, index) => <li key={index}>{message}</li>)}
+          </ul>
+        </section>
+      )}
+      {result.notes.length > 0 && (
+        <section className="mt-4 text-sm">
+          <h2 className="font-bold">הנחות ומגבלות החישוב</h2>
+          <ul className="mt-2 list-disc pr-5">
+            {result.notes.map((message, index) => <li key={index}>{message}</li>)}
+          </ul>
+        </section>
+      )}
 
       <div className="mt-4 border border-slate-300 p-4 text-center">
         <div className="text-sm">{refund ? "אומדן החזר המס" : "אומדן חבות מס נוספת"}</div>
@@ -54,8 +81,10 @@ export function PrintableSummary({ result, guide }: { result: RefundResult; guid
       </table>
 
       <h2 className="mt-5 text-base font-bold">
-        {guide.mustFile ? "טפסים להגשה (חובת הגשה)" : "טפסים להגשת בקשת החזר (אין חובת הגשה)"}
+        טפסים ואסמכתאות לבדיקה לפני הגשה
       </h2>
+      <p className="text-sm">{guide.filingExplanation}</p>
+      <ul className="my-2 list-disc pr-5 text-sm">{guide.readinessIssues.map((issue) => <li key={issue}>{issue}</li>)}</ul>
       <ol className="mt-2 space-y-3 text-sm">
         {guide.items.map((item, i) => (
           <li key={i} className="border-b border-slate-200 pb-2">
@@ -63,6 +92,7 @@ export function PrintableSummary({ result, guide }: { result: RefundResult; guid
               {item.formId} — {item.formName}
             </strong>
             <p className="text-slate-700">{item.why}</p>
+            <a href={item.sourceUrl} className="break-all text-xs underline">מקור רשמי: {item.sourceUrl}</a>
             {item.attachments.length > 0 && (
               <ul className="mt-1 text-xs text-slate-600">
                 {item.attachments.map((a, j) => (
@@ -73,6 +103,11 @@ export function PrintableSummary({ result, guide }: { result: RefundResult; guid
           </li>
         ))}
       </ol>
+      <h2 className="mt-4 font-bold">תשובות בדיקת שלמות התיק</h2>
+      <dl className="text-xs">{guide.answers.map((answer) => <div key={answer.label}><dt>{answer.label}</dt><dd>{answer.answer}</dd></div>)}</dl>
+      <h2 className="mt-4 font-bold">המשך להגשה</h2>
+      <ul className="list-disc pr-5 text-xs">{guide.howToFile.map((step) => <li key={step}>{step}</li>)}</ul>
+      <p className="mt-2 text-xs">מקורות נבדקו: {guide.researchedAt}</p>
 
       {result.warnings.length > 0 && (
         <>
