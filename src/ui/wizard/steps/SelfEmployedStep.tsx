@@ -122,10 +122,16 @@ export function SelfEmployedStep() {
           />
           <Field
             label="מקדמות מס הכנסה ששולמו"
-            hint="סך המקדמות ששילמתם השנה — נחשבות כמס ששולם מראש"
+            hint="מקדמות ששילמתם בעצמכם. אין לכלול כאן מס שלקוחות ניכו מהתשלום."
             value={fields.seAdvances}
             onChange={(v) => dispatch({ type: "set", patch: { seAdvances: v } })}
             placeholder="0"
+          />
+          <Field
+            label="מס שלקוחות ניכו במקור"
+            hint="סכמו את הניכוי באישורים השנתיים מהלקוחות (למשל 857), עבור הכנסות העסק שהזנתם בשנה זו. בלי מקדמות ובלי מס זר. אם לא נוכה מס, הזינו 0."
+            value={fields.seCustomerWithheld}
+            onChange={(v) => dispatch({ type: "set", patch: { seCustomerWithheld: v } })}
           />
         </div>
       </div>

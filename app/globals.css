@@ -7,7 +7,8 @@
 }
 
 body {
-  @apply bg-white text-zinc-900 antialiased;
+  @apply text-zinc-900 antialiased;
+  background-color: #edf6f3;
 }
 
 @layer base {
@@ -21,6 +22,7 @@ body {
 @layer components {
   .wizard-layout { @apply grid min-w-0 gap-6 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-10; }
   .wizard-content { @apply min-w-0 space-y-6; }
+  .app-header { background-color: #eaf7f8; border-top: 4px solid #0f766e; }
   .step-link { @apply flex min-h-11 w-full items-center gap-3 rounded-md px-3 py-2 text-right text-sm text-zinc-600; }
   .step-link[aria-current="step"] { @apply bg-emerald-50 font-semibold text-emerald-900; }
   .step-link:not(:disabled):hover { @apply bg-zinc-100; }

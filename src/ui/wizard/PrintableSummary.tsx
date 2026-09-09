@@ -53,6 +53,7 @@ export function PrintableSummary({ result, guide, issues = [] }: { result: Refun
       </div>
 
       <h2 className="mt-5 text-base font-bold">פירוט לפי מקור הכנסה</h2>
+      {result.businessCustomerWithheldIls > 0 && <p className="text-sm">בתשלומי העסק נכללו מקדמות בסך {ils(result.businessAdvancesPaidIls)} וניכוי בידי לקוחות בסך {ils(result.businessCustomerWithheldIls)}.</p>}
       <table className="mt-2 w-full border-collapse text-sm">
         <thead>
           <tr className="border-b border-slate-400 text-right">

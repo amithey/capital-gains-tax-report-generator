@@ -75,6 +75,15 @@ export function ProfileSelectStep() {
         </select>
         <span className="text-xs text-zinc-600">כרגע נתמכות השנים 2024–2025.</span>
       </label>
+      <details className="border-t border-zinc-200 pt-4 text-sm">
+        <summary className="cursor-pointer font-medium text-emerald-900">אילו נתונים וקבצים אפשר להזין כרגע?</summary>
+        <dl className="mt-3 space-y-3 leading-6 text-zinc-600">
+          <div><dt className="font-semibold text-zinc-900">שכר, עסק ושכירות</dt><dd>הזנה ידנית בלבד. אפשר להזין כמה מעסיקים. בעסק מזינים בנפרד מקדמות ומס שלקוחות ניכו במקור, לפי האישורים השנתיים.</dd></div>
+          <div><dt className="font-semibold text-zinc-900">שוק ההון</dt><dd>קריאה של דוח 867 נתמך ב-PDF או Flex Query ב-XML. כרגע נקלט דוח אחד; איחוד חשבונות ו-Activity CSV עדיין אינם נתמכים.</dd></div>
+          <div><dt className="font-semibold text-zinc-900">מה עדיין דורש השלמה?</dt><dd>106 אינו נקרא אוטומטית. נתוני בן או בת זוג, קצבאות, פרישה, הפסדים קודמים ומס שבח מזוהים בשאלון אך עדיין אינם מחושבים במלואם. פרטים כאלה עוצרים את האומדן הכולל.</dd></div>
+          <div><dt className="font-semibold text-zinc-900">מסמכים והגשה</dt><dd>מתקבלת רשימת אסמכתאות לפי התשובות. אין עדיין אימות מלא של המסמכים או מילוי טופס רשמי להגשה.</dd></div>
+        </dl>
+      </details>
     </div>
   );
 }

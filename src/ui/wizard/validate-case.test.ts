@@ -58,7 +58,7 @@ describe("annual case gate", () => {
   });
   it("requires business revenue and advances", () => {
     const fields = employee({ profiles: { ...employee().profiles, selfEmployed: true } });
-    expect(validateCase(fields, null, null).map((i) => i.field)).toEqual(["seRevenue", "seAdvances"]);
+    expect(validateCase(fields, null, null).map((i) => i.field)).toEqual(["seRevenue", "seAdvances", "seCustomerWithheld"]);
   });
   it.each(["0", "13", "1.5", "abc", ""])("rejects rental month value %j", (rentMonths) => {
     const fields = employee({ profiles: { ...employee().profiles, landlord: true }, rentMonthly: "4000", rentTaxPaid: "0", rentMonths });

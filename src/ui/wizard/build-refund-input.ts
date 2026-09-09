@@ -48,6 +48,7 @@ export function selfEmployedFromFields(fields: WizardFields): SelfEmployedResult
       ? { nationalInsurancePaidIls: num(fields.seNationalInsurance) }
       : {}),
     ...(fields.seAdvances.trim() ? { advancesPaidIls: num(fields.seAdvances) } : {}),
+    ...(fields.seCustomerWithheld.trim() ? { customerWithheldIls: num(fields.seCustomerWithheld) } : {}),
   });
 }
 

@@ -44,6 +44,7 @@ export interface WizardFields {
   seStudyFund: string;
   seNationalInsurance: string;
   seAdvances: string;
+  seCustomerWithheld: string;
   // דירה מושכרת
   rentMonthly: string;
   rentMonths: string;
@@ -77,6 +78,7 @@ export const initialFields: WizardFields = {
   seStudyFund: "",
   seNationalInsurance: "",
   seAdvances: "",
+  seCustomerWithheld: "",
   rentMonthly: "",
   rentMonths: "12",
   rentMortgageInterest: "",

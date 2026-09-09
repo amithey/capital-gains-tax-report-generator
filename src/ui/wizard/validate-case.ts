@@ -44,6 +44,7 @@ export function validateCase(fields: WizardFields, imported: ImportResult | null
   if (fields.profiles.selfEmployed) {
     check("seRevenue", fields.seRevenue, "הכנסה מעסק", "selfEmployed");
     check("seAdvances", fields.seAdvances, "מקדמות מס ששולמו", "selfEmployed");
+    check("seCustomerWithheld", fields.seCustomerWithheld, "מס שלקוחות ניכו במקור", "selfEmployed");
     for (const key of ["sePensionDeposit", "seStudyFund", "seNationalInsurance"] as const) check(key, fields[key], "הפקדות ותשלומים מהעסק", "selfEmployed", false);
     fields.seExpenses.forEach((e, i) => {
       check(`expenses.${i}.amount`, e.amount, `הוצאה ${i + 1}`, "selfEmployed");

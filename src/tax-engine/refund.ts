@@ -113,6 +113,7 @@ export interface RefundResult {
   readonly businessTaxableIncomeIls: number;
   /** מקדמות מס ששולמו (עצמאי). */
   readonly businessAdvancesPaidIls: number;
+  readonly businessCustomerWithheldIls: number;
   /** הכנסה חייבת נוספת (קצבה/פנסיה/אבטלה) שנכללה במדרגות. */
   readonly otherTaxableIncomeIls: number;
   readonly otherIncomeWithheldIls: number;
@@ -244,12 +245,16 @@ export function computeRefund(input: RefundInput): RefundResult {
   }
 
   const businessAdvancesPaidIls = se?.advancesPaidIls ?? 0;
+  // Annual payer certificates are tax already paid, not an expense or an advance.
+  // Source: Israel Tax Authority annual-return guides 2024/2025, withholding section (857).
+  const businessCustomerWithheldIls = se?.customerWithheldIls ?? 0;
 
   const totalLiabilityIls = salaryTaxLiabilityIls + investmentTaxLiabilityIls + rentalTaxLiabilityIls + surtaxIls;
   const totalWithheldIls =
     salaryTaxWithheldIls +
     investmentTaxWithheldIls +
     businessAdvancesPaidIls +
+    businessCustomerWithheldIls +
     rentalTaxPaidIls +
     otherIncomeWithheldIls;
   const refundIls = totalWithheldIls - totalLiabilityIls;
@@ -272,7 +277,7 @@ export function computeRefund(input: RefundInput): RefundResult {
       label: "עסק (עצמאי)",
       taxableIncomeIls: businessTaxableIncomeIls,
       taxIls: salaryTaxLiabilityIls * share(businessTaxableIncomeIls),
-      withheldIls: businessAdvancesPaidIls,
+      withheldIls: businessAdvancesPaidIls + businessCustomerWithheldIls,
     });
   }
   if (otherTaxableIncomeIls > 0 || otherIncomeWithheldIls > 0) {
@@ -340,6 +345,7 @@ export function computeRefund(input: RefundInput): RefundResult {
     investmentTaxWithheldIls,
     businessTaxableIncomeIls,
     businessAdvancesPaidIls,
+    businessCustomerWithheldIls,
     otherTaxableIncomeIls,
     otherIncomeWithheldIls,
     yishuvMutavCreditIls,

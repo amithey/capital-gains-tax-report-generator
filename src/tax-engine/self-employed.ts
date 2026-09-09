@@ -34,6 +34,8 @@ export interface SelfEmployedInput {
   readonly nationalInsurancePaidIls?: number;
   /** מקדמות מס הכנסה ששולמו — מועבר ל-refund.ts כצד "מס ששולם". */
   readonly advancesPaidIls?: number;
+  /** Israeli customer withholding, separate from advances; annual payer certificates (857). */
+  readonly customerWithheldIls?: number;
 }
 
 export interface RecognizedExpenseLine {
@@ -64,11 +66,15 @@ export interface SelfEmployedResult {
   readonly taxableBusinessIncomeIls: number;
   /** מקדמות — לצד ה"מס ששולם" בחישוב ההחזר. */
   readonly advancesPaidIls: number;
+  readonly customerWithheldIls: number;
   readonly warnings: readonly string[];
   readonly notes: readonly string[];
 }
 
 export function computeSelfEmployed(input: SelfEmployedInput): SelfEmployedResult {
+  if (input.customerWithheldIls !== undefined && (!Number.isFinite(input.customerWithheldIls) || input.customerWithheldIls < 0)) {
+    throw new Error("מס שנוכה בידי לקוחות חייב להיות סכום תקין שאינו שלילי.");
+  }
   const config = getTaxYearConfig(input.taxYear);
   const se = config.selfEmployed;
   const warnings: string[] = [];
@@ -160,6 +166,7 @@ export function computeSelfEmployed(input: SelfEmployedInput): SelfEmployedResul
     nationalInsuranceDeductionIls,
     taxableBusinessIncomeIls,
     advancesPaidIls: input.advancesPaidIls ?? 0,
+    customerWithheldIls: input.customerWithheldIls ?? 0,
     warnings,
     notes,
   };

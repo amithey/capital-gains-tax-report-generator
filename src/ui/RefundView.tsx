@@ -41,6 +41,7 @@ export function RefundView({ result }: { result: RefundResult }) {
         <div className="my-2 border-t border-slate-100" />
         <Row label="סך חבות המס" value={ils(result.totalLiabilityIls)} strong />
         <Row label="סך המס שכבר נוכה" value={ils(result.totalWithheldIls)} strong />
+        {result.businessCustomerWithheldIls > 0 && <Row label="מתוכו: מס שנוכה בידי לקוחות העסק" value={ils(result.businessCustomerWithheldIls)} />}
         <div className="my-2 border-t border-slate-100" />
         <Row label={refund ? "אומדן החזר" : "אומדן חבות נוספת"} value={ils(Math.abs(result.refundIls))} strong />
       </section>

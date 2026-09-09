@@ -35,14 +35,14 @@ export function EmployeeStep() {
             <Field label="שם מעסיק (לא חובה)" value={e.name} onChange={(v) => updateEmployer(i, { name: v })} />
             <Field
               label="הכנסה חייבת"
-              hint="שדה 158/172 בטופס 106"
+              hint="סך המשכורת החייבת במס באישור השנתי, לא הנטו שהתקבל בבנק"
               value={e.income}
               onChange={(v) => updateEmployer(i, { income: v })}
               placeholder="0"
             />
             <Field
               label="מס הכנסה שנוכה"
-              hint="שדה 042 בטופס 106"
+              hint="מס הכנסה שנוכה בפועל לפי האישור השנתי, ללא ביטוח לאומי ודמי בריאות"
               value={e.withheld}
               onChange={(v) => updateEmployer(i, { withheld: v })}
               placeholder="0"
@@ -70,7 +70,7 @@ export function EmployeeStep() {
             })
           }
         >
-          + הוסף מעסיק (אם עבדת ביותר ממקום אחד — מקור נפוץ להחזר)
+          + הוספת מעסיק
         </button>
       </div>
 
