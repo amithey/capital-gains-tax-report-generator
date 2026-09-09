@@ -17,7 +17,7 @@ import { FilingStep } from "./steps/FilingStep";
  * ניהול פוקוס: בכל מעבר צעד הפוקוס עובר לכותרת הצעד (נגישות).
  */
 export function WizardShell() {
-  const { fields, steps, currentStep, next, back } = useWizard();
+  const { fields, steps, currentStep, next, back, dispatch } = useWizard();
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
@@ -31,37 +31,32 @@ export function WizardShell() {
   const nextDisabled = currentStep.id === "profile" && !anyProfile;
 
   return (
-    <div className="space-y-6">
+    <div className="wizard-layout">
       {/* פס התקדמות */}
-      <nav aria-label="שלבי האשף" className="overflow-x-auto print:hidden">
-        <ol className="flex min-w-max items-center gap-1 text-xs md:gap-2 md:text-sm">
+      <nav aria-label="שלבי האשף" className="min-w-0 border-b border-zinc-200 pb-4 md:border-b-0 md:border-l md:pl-5 print:hidden">
+        <p className="mb-3 text-xs font-semibold text-zinc-500">שלב {stepIndex + 1} מתוך {steps.length}</p>
+        <ol className="grid grid-cols-2 gap-1 md:grid-cols-1">
           {steps.map((s, i) => {
             const state = i < stepIndex ? "done" : i === stepIndex ? "current" : "todo";
             return (
-              <li key={s.id} className="flex items-center gap-1 md:gap-2">
-                {i > 0 && <span className="text-slate-300">←</span>}
-                <span
+              <li key={s.id} className="min-w-0">
+                <button
+                  type="button"
+                  disabled={i > stepIndex}
+                  onClick={() => dispatch({ type: "goToStep", index: i })}
                   aria-current={state === "current" ? "step" : undefined}
-                  className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 ${
-                    state === "current"
-                      ? "bg-slate-900 font-medium text-white"
-                      : state === "done"
-                        ? "bg-emerald-100 text-emerald-800"
-                        : "bg-slate-100 text-slate-500"
-                  }`}
+                  className="step-link"
                 >
-                  <span className="tabular-nums">{state === "done" ? "✓" : i + 1}</span>
-                  <span className="hidden sm:inline">{s.title}</span>
-                </span>
+                  <span aria-hidden="true" className="flex h-6 w-6 shrink-0 items-center justify-center rounded border border-current text-xs tabular-nums">{i + 1}</span>
+                  <span>{s.title}</span>
+                </button>
               </li>
             );
           })}
         </ol>
-        <p className="mt-1 text-xs text-slate-400 sm:hidden">
-          שלב {stepIndex + 1} מתוך {steps.length}: {currentStep.title}
-        </p>
       </nav>
 
+      <div className="wizard-content">
       <h2 ref={headingRef} tabIndex={-1} className="text-xl font-bold outline-none print:hidden">
         {currentStep.title}
       </h2>
@@ -91,7 +86,7 @@ export function WizardShell() {
             type="button"
             onClick={next}
             disabled={nextDisabled}
-            className="rounded-md bg-slate-900 px-5 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-40"
+            className="primary-action"
           >
             {currentStep.id === "profile" ? "מתחילים ←" : "הבא ←"}
           </button>
@@ -100,6 +95,7 @@ export function WizardShell() {
 
       <div className="print:hidden">
         <DisclaimerBanner />
+      </div>
       </div>
     </div>
   );

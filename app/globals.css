@@ -7,7 +7,24 @@
 }
 
 body {
-  @apply bg-slate-50 text-slate-900;
+  @apply bg-white text-zinc-900 antialiased;
+}
+
+@layer base {
+  :focus-visible { outline: 2px solid #047857; outline-offset: 3px; }
+  input, select, textarea { min-width: 0; }
+  input:not([type="checkbox"]):not([type="radio"]), select { min-height: 44px; }
+  button { touch-action: manipulation; }
+  h1, h2, h3, p, label { overflow-wrap: anywhere; }
+}
+
+@layer components {
+  .wizard-layout { @apply grid min-w-0 gap-6 md:grid-cols-[12rem_minmax(0,1fr)] md:gap-10; }
+  .wizard-content { @apply min-w-0 space-y-6; }
+  .step-link { @apply flex min-h-11 w-full items-center gap-3 rounded-md px-3 py-2 text-right text-sm text-zinc-600; }
+  .step-link[aria-current="step"] { @apply bg-emerald-50 font-semibold text-emerald-900; }
+  .step-link:not(:disabled):hover { @apply bg-zinc-100; }
+  .primary-action { @apply min-h-11 rounded-md bg-emerald-800 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-900 disabled:cursor-not-allowed disabled:opacity-40; }
 }
 
 /* סיכום להדפסה/שמירה כ-PDF: רקע לבן, שוליים, RTL. */
@@ -19,4 +36,7 @@ body {
     background: white;
     direction: rtl;
   }
+  .wizard-layout { display: block; }
+  .wizard-content { width: 100%; }
+  tr { break-inside: avoid; }
 }
